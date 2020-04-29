@@ -1,10 +1,48 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, Renderer2, NgZone, VERSION, ViewEncapsulation } from '@angular/core';
+import { Subscription, fromEvent } from 'rxjs';
+const md = require('!html-loader!markdown-loader!./README.md');
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
-  title = 'my-lib';
+export class AppComponent implements OnInit, OnDestroy {
+  version;
+  clickSub: Subscription = new Subscription();
+
+  constructor(private renderer2: Renderer2, private ngZone: NgZone) {
+
+  }
+  ngOnInit(): void {
+    this.version = VERSION.full;
+    this.ngZone.runOutsideAngular(() => {
+      const headerMenu = document.querySelector('#headerMenu');
+      const headerNode = headerMenu.parentNode;
+      const containerNode = document.querySelector('.app-container');
+      this.clickSub.add(fromEvent(headerMenu, 'click').subscribe(e => {
+        if (headerMenu.classList.contains('active')) {
+          this.renderer2.removeClass(headerMenu, 'active');
+          this.renderer2.removeClass(headerNode, 'active');
+        } else {
+          this.renderer2.addClass(headerMenu, 'active');
+          this.renderer2.addClass(headerNode, 'active');
+        }
+      }));
+      this.clickSub.add(fromEvent(containerNode, 'click').subscribe(e => {
+        if (headerMenu.classList.contains('active') && !(<any>headerNode).contains(e.target)) {
+          this.renderer2.removeClass(headerMenu, 'active');
+          this.renderer2.removeClass(headerNode, 'active');
+        }
+      }));
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.clickSub) {
+      this.clickSub.unsubscribe();
+    }
+  }
+
 }

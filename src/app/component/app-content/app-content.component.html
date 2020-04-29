@@ -1,0 +1,23 @@
+<div class="wrapper">
+    <div id="menuLink" class="menu-link">
+      <span></span>
+    </div>
+    <div class="sidebar">
+      <ul class="devui-menu" style="margin-bottom: 0;">
+        <li class="devui-menu-item" routerLinkActive="devui-menu-item-selected">
+          <a routerLink="get-start">快速开始</a>
+        </li>
+      </ul>
+      <nav class="side-nav">
+        <!-- <d-accordion [data]="componentsData" [linkType]="'routerLink'"></d-accordion> -->
+        <ul>
+            <li><a href="#">button</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="doc-viewer-container">
+      <div class="main">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
